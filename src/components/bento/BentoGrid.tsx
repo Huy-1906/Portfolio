@@ -14,10 +14,7 @@ import {
   domainLabels,
   type Domain,
 } from "@/lib/data";
-import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { useWebGLSupported } from "@/hooks/useWebGLSupported";
 
-const HeroScene = dynamic(() => import("@/components/three/Scene"), { ssr: false });
 const CNNViz = dynamic(() => import("@/components/CNNViz"), {
   ssr: false,
   loading: () => (
@@ -44,38 +41,25 @@ function Label({ children }: { children: React.ReactNode }) {
 }
 
 export default function BentoGrid() {
-  const reduced = useReducedMotion();
-  const webgl = useWebGLSupported();
-  const show3D = webgl && !reduced;
-
   return (
     <div className="mx-auto max-w-6xl px-4 py-6 md:px-6 md:py-10">
       <div className="grid auto-rows-[minmax(160px,auto)] grid-cols-1 gap-3 md:grid-cols-12 md:gap-4">
-        {/* HERO — big tile with truss 3D */}
+        {/* HERO — typography tile (no 3D) */}
         <BentoTile col={8} row={2} accent id="top" className="justify-between">
-          <div className="pointer-events-none absolute inset-0 opacity-90">
-            {show3D ? (
-              <HeroScene />
-            ) : (
-              <div
-                aria-hidden
-                className="absolute inset-0 opacity-50"
-                style={{
-                  background:
-                    "radial-gradient(80% 80% at 70% 40%, var(--v2), transparent 70%)",
-                }}
-              />
-            )}
-          </div>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full opacity-[0.12] blur-3xl"
+            style={{ background: "radial-gradient(circle, var(--v3), var(--v1) 60%, transparent 75%)" }}
+          />
           <div className="relative z-10">
             <Label>Engineering Mechanics · Computational</Label>
           </div>
           <div className="relative z-10 mt-auto">
-            <h1 className="text-5xl font-bold tracking-tight text-fg md:text-7xl">
+            <h1 className="text-5xl font-bold leading-[0.95] tracking-tight text-fg md:text-7xl">
               {profile.name}
             </h1>
-            <p className="mt-3 max-w-md text-lg text-fg-muted">{profile.role}</p>
-            <p className="mono mt-4 text-[13px] text-accent">
+            <p className="mt-4 max-w-md text-lg text-fg-muted md:text-xl">{profile.role}</p>
+            <p className="mono mt-5 text-[13px] text-accent">
               FEM · reduced-order modeling · ML surrogates
             </p>
           </div>
