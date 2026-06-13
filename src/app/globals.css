@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+/* ============================================================
+   THEME — dark scientific-instrument (default). Light mirror.
+   ============================================================ */
+:root,
+.dark {
+  --bg: #0a0c10;
+  --bg-elev: #0e1217;
+  --fg: #e8ebf0;
+  --fg-muted: #8b95a5;
+  --accent: #2dd4bf; /* viridis teal */
+  --accent-fg: #04110f;
+  --accent-hot: #fbbf24; /* plasma amber — data peaks only */
+  --surface: #12161d;
+  --surface-2: #1a1f28;
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.14);
+
+  /* viridis ramp — DATA ONLY */
+  --v0: #440154;
+  --v1: #3b528b;
+  --v2: #21908c;
+  --v3: #5dc863;
+  --v4: #fde725;
+
+  --glass-bg: rgba(18, 22, 29, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: 12px;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.light {
+  --bg: #f7f8fa;
+  --bg-elev: #ffffff;
+  --fg: #0a0c10;
+  --fg-muted: #525e6e;
+  --accent: #0d9488; /* darker teal for AA on light */
+  --accent-fg: #ffffff;
+  --accent-hot: #b45309;
+  --surface: #ffffff;
+  --surface-2: #f1f3f6;
+  --border: rgba(10, 12, 16, 0.1);
+  --border-strong: rgba(10, 12, 16, 0.18);
+
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(10, 12, 16, 0.08);
+  --glass-blur: 12px;
+  --shadow: 0 8px 24px rgba(10, 12, 16, 0.08);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-elev: var(--bg-elev);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-hot: var(--accent-hot);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-mono);
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* mono utility for labels/stats/tech */
+.mono {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ============================================================
+   GLASS — sticky nav ONLY
+   ============================================================ */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+/* hairline card */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.card-hover {
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--border));
+}
+
+/* focus ring */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
