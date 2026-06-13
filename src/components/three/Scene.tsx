@@ -1,38 +1,25 @@
 "use client";
 
-/* eslint-disable react-hooks/immutability */
-
 import { useEffect, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { HeroMesh, type HeroLiveValues } from "./HeroMesh";
-
-/**
- * Contained hero WebGL canvas. Fills its parent element (NOT a fixed full-page
- * background) so Hero.tsx can place it in the right zone of the layout. Renders
- * only the finite-element displacement plate, framed slightly right-of-center
- * and lit so the viridis colormap stays vivid against the dark instrument bg.
- *
- * Pauses the render loop when offscreen or when the tab is hidden.
- */
-
-interface RigProps {
-  hero: React.RefObject<HeroLiveValues>;
-}
-
-/** Idle breathing of the colormap intensity — keeps the plate alive. */
-function Rig({ hero }: RigProps) {
-  useFrame((state) => {
-    const t = state.clock.elapsedTime;
-    hero.current.colorBoost = 1 + Math.sin(t * 0.18) * 0.06;
-  });
-  return null;
-}
+import { Environment } from "@react-three/drei";
+import { TrussStructure, type TrussLive } from "./TrussStructure";
 
 export interface HeroSceneProps {
-  /** Reduced-motion: freeze per-frame animation; render once on demand. */
   reducedMotion?: boolean;
-  /** Extra className for the contained wrapper. */
   className?: string;
+}
+
+/** Smooth intro ramp 0 -> 1 over ~1.2s. */
+function Intro({ live }: { live: React.RefObject<TrussLive> }) {
+  const start = useRef<number | null>(null);
+  useFrame((state) => {
+    if (start.current === null) start.current = state.clock.elapsedTime;
+    const t = Math.min(1, (state.clock.elapsedTime - start.current) / 1.2);
+    // smootherstep
+    live.current.intro = t * t * t * (t * (t * 6 - 15) + 10);
+  });
+  return null;
 }
 
 export default function HeroScene({
@@ -40,20 +27,15 @@ export default function HeroScene({
   className = "",
 }: HeroSceneProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
-  const hero = useRef<HeroLiveValues>({ opacity: 0.96, colorBoost: 1 });
+  const live = useRef<TrussLive>({ intro: reducedMotion ? 1 : 0 });
   const [active, setActive] = useState(true);
 
-  // Pause the loop when the canvas scrolls offscreen or the tab is hidden.
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
-
     let onscreen = true;
-    let visible =
-      typeof document === "undefined" ? true : !document.hidden;
-
+    let visible = typeof document === "undefined" ? true : !document.hidden;
     const apply = () => setActive(onscreen && visible);
-
     const io = new IntersectionObserver(
       ([entry]) => {
         onscreen = entry.isIntersecting;
@@ -62,13 +44,11 @@ export default function HeroScene({
       { threshold: 0.01 }
     );
     io.observe(el);
-
     const onVis = () => {
       visible = !document.hidden;
       apply();
     };
     document.addEventListener("visibilitychange", onVis);
-
     return () => {
       io.disconnect();
       document.removeEventListener("visibilitychange", onVis);
@@ -91,16 +71,17 @@ export default function HeroScene({
           powerPreference: "high-performance",
           alpha: true,
         }}
-        camera={{ position: [0.6, 0.1, 5.4], fov: 42 }}
+        camera={{ position: [3.4, 1.6, 4.2], fov: 38 }}
         style={{ background: "transparent" }}
         frameloop={loop}
         onCreated={({ camera }) => camera.lookAt(0, 0, 0)}
       >
-        <ambientLight intensity={0.8} />
-        <directionalLight position={[5, 5, 5]} intensity={1.15} />
-        <directionalLight position={[-5, -3, 2]} intensity={0.45} />
-        <Rig hero={hero} />
-        <HeroMesh live={hero} paused={reducedMotion} />
+        <ambientLight intensity={0.35} />
+        <directionalLight position={[5, 6, 4]} intensity={2.2} />
+        <directionalLight position={[-4, -2, -3]} intensity={0.5} color="#2dd4bf" />
+        <Environment preset="city" />
+        {!reducedMotion && <Intro live={live} />}
+        <TrussStructure live={live} />
       </Canvas>
     </div>
   );

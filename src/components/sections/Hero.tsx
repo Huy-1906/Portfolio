@@ -54,7 +54,7 @@ export default function Hero() {
           <p className="text-xl text-fg-muted">{profile.role}</p>
 
           <p className="mono text-[13px] tracking-tight text-accent">
-            FEM · reduced-order · CNN/ANN surrogates · agentic RAG
+            FEM · reduced-order modeling · ML surrogates
           </p>
 
           <p className="max-w-prose text-base leading-relaxed text-fg-muted">
