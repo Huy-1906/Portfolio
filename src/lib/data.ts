@@ -2,14 +2,12 @@ export type Domain =
   | "fem"
   | "ai"
   | "robotics"
-  | "saas"
   | "web";
 
 export const domainLabels: Record<Domain, string> = {
   fem: "Computational / FEM",
   ai: "AI / LLM",
   robotics: "Robotics",
-  saas: "SaaS / Products",
   web: "Web",
 };
 
@@ -148,21 +146,6 @@ export const projects: Project[] = [
     stack: "Edge AI · Embedded",
     blurb:
       "An on-device AI robot exploring local inference and autonomous behavior at the edge.",
-  },
-  // ---- SaaS / Products ----
-  {
-    title: "Web3D Product Configurators",
-    domain: "saas",
-    stack: "Three.js · React · WebGL",
-    blurb:
-      "Interactive 3D configurators with real-time material and geometry customization.",
-  },
-  {
-    title: "Micro-SaaS & Boilerplates",
-    domain: "saas",
-    stack: "Next.js · FastAPI · Stripe",
-    blurb:
-      "A set of small commercial SaaS tools and reusable starter kits built for fast shipping.",
   },
   // ---- Web ----
   {

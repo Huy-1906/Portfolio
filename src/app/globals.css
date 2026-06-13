@@ -95,3 +95,91 @@ body {
   transition: padding 0.3s cubic-bezier(0.16, 1, 0.3, 1),
     color 0.3s ease;
 }
+
+/* ============================================================
+   FULL-PAGE 3D — canvas layer, scrim, HUD, grain
+   ============================================================ */
+
+/* fixed canvas sits behind all DOM */
+.canvas-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+}
+
+/* DOM content scrolls above the canvas */
+.content-layer {
+  position: relative;
+  z-index: 1;
+}
+
+/* scrim behind text blocks only — never full overlay */
+.scrim {
+  position: relative;
+}
+.scrim::before {
+  content: "";
+  position: absolute;
+  inset: -8% -6%;
+  z-index: -1;
+  background: radial-gradient(
+    120% 100% at 0% 50%,
+    var(--bg) 0%,
+    color-mix(in srgb, var(--bg) 55%, transparent) 45%,
+    transparent 80%
+  );
+  pointer-events: none;
+}
+
+/* film grain / dither over the whole viewport */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.045;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@media (prefers-reduced-motion: reduce) {
+  .grain { opacity: 0.03; }
+}
+
+/* mono HUD — section index + scroll progress hairline */
+.hud {
+  position: fixed;
+  z-index: 2;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--fg-dim);
+  pointer-events: none;
+}
+.hud-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 1px;
+  z-index: 3;
+  background: var(--fg-muted);
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+
+/* static field poster fallback */
+.field-poster {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  background:
+    repeating-radial-gradient(
+      circle at 70% 45%,
+      transparent 0,
+      transparent 38px,
+      color-mix(in srgb, var(--fg) 6%, transparent) 39px,
+      transparent 40px
+    ),
+    radial-gradient(140% 120% at 75% 40%, color-mix(in srgb, var(--fg) 4%, transparent), transparent 70%);
+}
